@@ -133,6 +133,12 @@ const eventSchema = new Schema<IEvent, EventModel>(
 );
 
 eventSchema.index({ slug: 1 }, { unique: true });
+eventSchema.index({ date: 1 });
+eventSchema.index({ location: 1 });
+eventSchema.index({ mode: 1 });
+eventSchema.index({ organizer: 1 });
+eventSchema.index({ createdAt: -1 });
+eventSchema.index({ date: 1, mode: 1 });
 
 eventSchema.pre("save", function (next) {
   if (this.isModified("title") || this.isNew) {

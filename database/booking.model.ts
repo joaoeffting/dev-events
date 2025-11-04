@@ -16,7 +16,6 @@ const bookingSchema = new Schema<IBooking, BookingModel>(
       type: Schema.Types.ObjectId,
       ref: "Event",
       required: [true, "Event ID is required"],
-      index: true,
     },
     email: {
       type: String,
@@ -38,6 +37,9 @@ const bookingSchema = new Schema<IBooking, BookingModel>(
 );
 
 bookingSchema.index({ eventId: 1 });
+bookingSchema.index({ email: 1 });
+bookingSchema.index({ createdAt: -1 });
+bookingSchema.index({ eventId: 1, email: 1 }, { unique: true });
 
 bookingSchema.pre("save", async function (next) {
   try {
