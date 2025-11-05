@@ -2,8 +2,6 @@ import { v2 as cloudinary } from "cloudinary";
 import { Event } from "@/database";
 import connectDB from "@/lib/mongodb";
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile } from "fs/promises";
-import { join } from "path";
 
 function getArrayField(formData: FormData, fieldName: string): string[] {
   const allValues = formData.getAll(fieldName);

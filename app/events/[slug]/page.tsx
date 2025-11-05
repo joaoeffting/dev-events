@@ -3,6 +3,9 @@ import { notFound } from "next/navigation";
 import EventDetailComponent from "@/components/event-detail";
 import EventAgenda from "@/components/event-agenda";
 import EventTags from "@/components/event-tags";
+import BookEvent from "@/components/book-event";
+import { getSimilarEventsBySlug } from "@/lib/actions/event.actions";
+import EventCard from "@/components/event-card";
 
 const EventDetail = async ({
   params,
@@ -25,6 +28,10 @@ const EventDetail = async ({
   if (!event) {
     return notFound();
   }
+
+  const bookings = 10;
+
+  const similarEvents = await getSimilarEventsBySlug(slug);
 
   return (
     <section id="event">
@@ -68,8 +75,28 @@ const EventDetail = async ({
           <EventTags tags={event.tags} />
         </div>
         <aside className="booking">
-          <p className="text-lg font-bold">Book Event</p>
+          <div className="signup-card">
+            <h2>Book Your Spot</h2>
+            {bookings > 0 ? (
+              <p className="text-sm">Join {bookings} others</p>
+            ) : (
+              <p className="text-sm">Be the first to book</p>
+            )}
+            <BookEvent />
+          </div>
         </aside>
+      </div>
+      <div className="flex w-full flex-col gap-4 pt-20">
+        <h2>Similar Events</h2>
+        <div className="events">
+          {similarEvents && similarEvents.length > 0 ? (
+            similarEvents.map((event) => (
+              <EventCard key={event.title} {...event} />
+            ))
+          ) : (
+            <p>No similar events found</p>
+          )}
+        </div>
       </div>
     </section>
   );
