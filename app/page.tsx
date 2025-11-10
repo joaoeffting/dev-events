@@ -1,13 +1,10 @@
 import EventCard from "@/components/event-card";
 import ExploreBtn from "@/components/explore-btn";
 import { IEvent } from "@/database";
-import { cacheLife } from "next/cache";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export default async function Home() {
-  "use cache";
-  cacheLife("hours");
   const response = await fetch(`${BASE_URL}/api/events`);
   const data = await response.json();
 
