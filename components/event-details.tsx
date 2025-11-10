@@ -6,11 +6,8 @@ import EventAgenda from "./event-agenda";
 import EventTags from "./event-tags";
 import BookEvent from "./book-event";
 import EventCard from "./event-card";
-import { cacheLife } from "next/cache";
 
 const EventDetails = async ({ params }: { params: Promise<string> }) => {
-  "use cache";
-  cacheLife("hours");
   const slug = await params;
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/events/${slug}`
