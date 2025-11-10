@@ -1,18 +1,19 @@
 import EventCard from "@/components/event-card";
 import ExploreBtn from "@/components/explore-btn";
 import { IEvent } from "@/database";
+import { events } from "@/lib/constants/events";
 
 export default async function Home() {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/events`
-  );
-  const data = await response.json();
+  // const response = await fetch(
+  //   `${process.env.NEXT_PUBLIC_BASE_URL}/api/events`
+  // );
+  // const data = await response.json();
 
-  if (!response.ok) {
-    return <div>Failed to fetch events</div>;
-  }
+  // if (!response.ok) {
+  //   return <div>Failed to fetch events</div>;
+  // }
 
-  const events = data.events;
+  // const events = data.events;
 
   return (
     <section>

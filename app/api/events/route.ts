@@ -2,8 +2,6 @@ import { v2 as cloudinary } from "cloudinary";
 import { Event } from "@/database";
 import connectDB from "@/lib/mongodb";
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile } from "fs/promises";
-import { join } from "path";
 
 function getArrayField(formData: FormData, fieldName: string): string[] {
   const allValues = formData.getAll(fieldName);
@@ -56,6 +54,18 @@ export async function POST(request: NextRequest) {
     }
 
     // get image and upload to cloudinary
+    if (
+      process.env.CLOUDINARY_CLOUD_NAME &&
+      process.env.CLOUDINARY_API_KEY &&
+      process.env.CLOUDINARY_API_SECRET
+    ) {
+      cloudinary.config({
+        cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+        api_key: process.env.CLOUDINARY_API_KEY,
+        api_secret: process.env.CLOUDINARY_API_SECRET,
+      });
+    }
+
     const bytes = await imageFile.arrayBuffer();
     const buffer = Buffer.from(bytes);
     const uploadResult = await new Promise((resolve, reject) => {
@@ -120,9 +130,17 @@ export async function GET() {
       { status: 200 }
     );
   } catch (e) {
-    console.error(e);
+    console.error("GET /api/events error:", e);
+    const error = e instanceof Error ? e.message : "Unknown error";
+    const errorDetails = e instanceof Error ? e.stack : String(e);
     return NextResponse.json(
-      { message: "Failed to get events", error: e },
+      {
+        message: "Failed to get events",
+        error,
+        ...(process.env.NODE_ENV === "development" && {
+          details: errorDetails,
+        }),
+      },
       { status: 500 }
     );
   }

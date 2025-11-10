@@ -10,8 +10,6 @@ declare global {
   var mongoose: MongooseCache | undefined;
 }
 
-const MONGODB_URI = process.env.MONGODB_URI;
-
 // Use a global variable to cache the connection in development
 // This prevents multiple connections from being created during hot-reloads
 let cached: MongooseCache = global.mongoose as MongooseCache;
@@ -35,14 +33,18 @@ async function connectDB(): Promise<Connection> {
   // Create a new connection promise if one doesn't exist
   // This ensures multiple simultaneous calls reuse the same connection
   if (!cached.promise) {
+    const MONGODB_URI = process.env.MONGODB_URI;
+    
     if (!MONGODB_URI) {
       throw new Error(
-        "Please define the MONGODB_URI environment variable inside .env.local"
+        "Please define the MONGODB_URI environment variable"
       );
     }
 
     const opts = {
-      bufferCommands: false, // Disable mongoose buffering for immediate errors
+      bufferCommands: false,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
     };
 
     cached.promise = mongoose
